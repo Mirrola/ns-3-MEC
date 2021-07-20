@@ -1,0 +1,53 @@
+# -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
+
+# def options(opt):
+#     pass
+
+# def configure(conf):
+#     conf.check_nonfatal(header_name='stdint.h', define_name='HAVE_STDINT_H')
+
+def build(bld):
+    module = bld.create_ns3_module('orchestrator', ['core','task'])
+    module.source = [
+ #       'model/orchestrator.cc',
+        'model/generateunit/generatetaskbase.cc',
+        'model/receiveunit/receivebase.cc',
+        'model/sendunit/sendbase.cc',
+        'model/orchestratorunit/orchestratorbase.cc',
+        'model/taskinfounit/task-table.cc',
+        'model/manager.cc',
+  #      'helper/orchestrator-helper.cc',
+        ]
+
+    module_test = bld.create_ns3_module_test_library('orchestrator')
+    module_test.source = [
+        'test/orchestrator-test-suite.cc',
+        ]
+    # Tests encapsulating example programs should be listed here
+    if (bld.env['ENABLE_EXAMPLES']):
+        module_test.source.extend([
+            'test/orchestrator-examples-test-suite.cc',
+             ])
+
+    headers = bld(features='ns3header')
+    headers.module = 'orchestrator'
+    headers.source = [
+ #       'model/orchestrator.h',
+ #       'helper/orchestrator-helper.h',
+        'model/generateunit/generatetaskbase.h',
+        'model/generateunit/default-generate.h',
+        'model/orchestratorunit/default-orchestrator.h',
+        'model/receiveunit/default-receive.h',
+        'model/sendunit/default-send.h',
+        'model/receiveunit/receivebase.h',
+        'model/sendunit/sendbase.h',
+        'model/orchestratorunit/orchestratorbase.h',
+        'model/taskinfounit/task-table.h',
+        'model/manager.h',
+        ]
+
+    if bld.env.ENABLE_EXAMPLES:
+        bld.recurse('examples')
+
+    # bld.ns3_python_bindings()
+
