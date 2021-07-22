@@ -10,14 +10,16 @@
 #include"ns3/default-orchestrator.h"
 #include"ns3/default-receive.h"
 #include"ns3/default-send.h"
+#include<initializer_list>
 namespace ns3{
     class OrchestratorBase;
     class GenerateTaskBase;
+    class DefaultGenerate;
     class Manager:public Object{ //Manager作为任务生成部件、接收、发送、调度部件的集合体。
         public:
             static TypeId GetTypeId(void);
             Manager();
-            void GetTaskInfo(std::string taskId,double requestecpu,double requestmem,std::size_t prior,const std::string& destinationMachineId);
+            void GetTaskInfo(std::initializer_list<std::string> taskInfo);
             void GenerateTask(void);
             void ReceiveTask(Ptr<Task> t);
             void SendTask(void);
@@ -29,7 +31,7 @@ namespace ns3{
             Ptr<Node> m_node;
             std::string m_machineId="";
             Ptr<OrchestratorBase> m_orchestratorUnit = CreateObject<DefaultOrchestrator>(m_taskStatusTable,m_node);
-           // Ptr<GenerateTaskBase> m_generateUnit=CreateObject<DefaultGenerate>(m_taskStatusTable,m_machineId);
+            Ptr<GenerateTaskBase> m_generateUnit=CreateObject<DefaultGenerate>(m_taskStatusTable,m_machineId);
             Ptr<DefaultReceive> m_receiveUnit=CreateObject<DefaultReceive>(m_taskStatusTable,m_machineId);
             Ptr<SendBase> m_sendUnit;
 

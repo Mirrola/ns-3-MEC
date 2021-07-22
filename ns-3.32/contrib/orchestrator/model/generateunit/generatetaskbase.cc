@@ -11,14 +11,14 @@ namespace ns3{
 
         return tid;
     }
-    void GenerateTaskBase::GetInfo(std::string taskId,double requestecpu,double requestmem,std::size_t prior,const std::string& destinationMachineId)
-    {
-        m_taskId = taskId;
-        m_requestcpu =requestecpu;
-        m_requestmem = requestmem;
-        m_prior = prior;
-        m_destinationMachineId = destinationMachineId;
-
-    }
+//    void GenerateTaskBase::GetInfo(std::string taskId,double requestecpu,double requestmem,std::size_t prior,const std::string& destinationMachineId)
+//    {
+//        m_taskId = taskId;
+//        m_requestcpu =requestecpu;
+//        m_requestmem = requestmem;
+//        m_prior = prior;
+//        m_destinationMachineId = destinationMachineId;
+//
+//    }
 
 }

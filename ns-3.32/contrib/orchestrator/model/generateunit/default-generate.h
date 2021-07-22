@@ -1,8 +1,10 @@
-#ifdef DEFAULTGENERATE_H
+#ifndef DEFAULTGENERATE_H
 #define DEFAULTGENERATE_H
 #include"ns3/generatetaskbase.h"
 #include"ns3/task.h"
 #include"ns3/task-table.h"
+#include <initializer_list>
+#include "boost/lexical_cast.hpp"
 namespace ns3{
     class DefaultGenerate:public GenerateTaskBase{
         public:
@@ -36,20 +38,21 @@ namespace ns3{
 		        //}
 		        return newtask;
             }
-//            void GetInfo(std::string taskId,double requestecpu,double requestmem,std::size_t prior,const std::string& destinationMachineId)
-//            {
-//                m_taskId = taskId;
-//                m_requestcpu =requestecpu;
-//                m_requestmem = requestmem;
-//                m_prior = prior;
-//                m_destinationMachineId = destinationMachineId;
-//            }
-//        private:
-//            std::string m_taskId;
-//            double m_requestcpu;
-//            double m_requestmem;
-//            std::size_t m_prior;
-//            std::string m_destinationMachineId = "";
+            virtual void GetInfo(std::initializer_list<std::string> taskInfo) override
+            {
+                auto it = taskInfo.begin();
+                m_taskId = *(it++);
+                m_requestcpu =boost::lexical_cast<double>(*it++);
+                m_requestmem = boost::lexical_cast<double>(*it++);
+                m_prior = boost::lexical_cast<std::size_t>(*it++);
+                m_destinationMachineId = *(it);
+            }
+        private:
+            std::string m_taskId;
+            double m_requestcpu;
+            double m_requestmem;
+            std::size_t m_prior;
+            std::string m_destinationMachineId = "";
     };
 }
 #endif /*  DEFAULTGENERATE_H    */

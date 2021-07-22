@@ -11,6 +11,7 @@
 namespace ns3{
     class SendBase;
     class TaskTable;
+    class Task;
     class OrchestratorBase:public Object{
         public:
             static TypeId GetTypeId(void);
@@ -18,6 +19,7 @@ namespace ns3{
             virtual ~OrchestratorBase();
             virtual bool ChooseTask()=0;//按照某种规则挑选出任务
             virtual void Run()=0;//运行挑选出的任务
+            virtual void Release(Ptr<Task> task)=0;//任务结束时，释放占用的资源
             void SetNode(Ptr<Node> node);
             Ptr<Node> GetNode(void) const;
 
