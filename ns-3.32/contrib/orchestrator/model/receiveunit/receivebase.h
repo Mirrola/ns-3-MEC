@@ -10,7 +10,7 @@ namespace ns3{
        public:
             static TypeId GetTypeId(void);
             ReceiveBase(Ptr<TaskTable> table,std::string mid):m_taskStatusTable(table),m_machineId(mid){}
-            virtual ~ReceiveBase();
+            virtual ~ReceiveBase(){}
             virtual void HandleReceive(void)=0;//这个名字起的不太好，他的主要工作就是判断接收到的task或job后续是怎处理。
  //           virtual void DelieverToSend(void)=0;
  //           virtual void DelieverToOrchestrator(void)=0;

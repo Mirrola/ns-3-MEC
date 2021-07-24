@@ -16,6 +16,7 @@ def build(bld):
         'model/orchestratorunit/orchestratorbase.cc',
         'model/taskinfounit/task-table.cc',
         'model/manager.cc',
+        'helper/manager-helper.cc',
   #      'helper/orchestrator-helper.cc',
         ]
 
@@ -27,6 +28,7 @@ def build(bld):
     if (bld.env['ENABLE_EXAMPLES']):
         module_test.source.extend([
             'test/orchestrator-examples-test-suite.cc',
+            'test/manager-test.cc',
              ])
 
     headers = bld(features='ns3header')
@@ -44,6 +46,7 @@ def build(bld):
         'model/orchestratorunit/orchestratorbase.h',
         'model/taskinfounit/task-table.h',
         'model/manager.h',
+        'helper/manager-helper.h',
         ]
 
     if bld.env.ENABLE_EXAMPLES:

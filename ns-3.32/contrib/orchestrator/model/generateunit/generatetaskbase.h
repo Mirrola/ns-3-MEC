@@ -14,7 +14,7 @@ namespace ns3{
         public:
             static TypeId GetTypeId(void);
             GenerateTaskBase(Ptr<TaskTable> table,std::string Mid):m_taskStatusTable(table),m_machineId(Mid){}
-            virtual ~GenerateTaskBase();
+            virtual ~GenerateTaskBase(){}
             virtual Ptr<Task> Generate(void)=0;
             //virtual void GetInfo(std::string taskId,double requestecpu,double requestmem,std::size_t prior,const std::string& destinationMachineId);
             virtual void GetInfo(std::initializer_list<std::string> taskInfo) =0;

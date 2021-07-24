@@ -93,7 +93,6 @@ namespace ns3{
 		        StataTransfer(m_task,1);
 		
             }
-            
 
     };
 

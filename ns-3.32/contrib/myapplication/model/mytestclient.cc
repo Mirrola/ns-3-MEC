@@ -194,7 +194,7 @@ TestUdpEchoClient::GetDataSize (void) const
 {
   NS_LOG_FUNCTION (this);
   return m_size;
-}
+} 
 /*-------------待修改-------------------------*/
 void 
 TestUdpEchoClient::SetFill (std::string fill)

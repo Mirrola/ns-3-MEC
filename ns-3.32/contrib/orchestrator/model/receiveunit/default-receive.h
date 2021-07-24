@@ -6,7 +6,6 @@ namespace ns3{
             static TypeId GetTypeId(void);
             DefaultReceive(Ptr<TaskTable> table,std::string mid):ReceiveBase(table,mid){}
 
-            ~DefaultReceive();
             void ReceiveTask(Ptr<Task> task)//这一部分不在基类中声明是可能接收到的不是task而是一个job(由多个task组成)，接收的形式都大不一样
             {
                 m_task = task;

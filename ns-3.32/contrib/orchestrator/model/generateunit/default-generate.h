@@ -8,9 +8,15 @@
 namespace ns3{
     class DefaultGenerate:public GenerateTaskBase{
         public:
-            static TypeId GetTypeId(void);
+            static TypeId GetTypeId(void)
+		    {
+		        static TypeId tid = TypeId("ns3::DefaultGenerate")
+		            .SetParent<Object>()
+		            .SetGroupName("MyGenerate");
+		        return tid;
+		    }
+
             DefaultGenerate(Ptr<TaskTable> table,std::string Mid):GenerateTaskBase(table,Mid){}
-            ~DefaultGenerate();
             virtual Ptr<Task> Generate() override
             {
                // auto now_orche = m_node.GetObject<OrchestratorBase>();
