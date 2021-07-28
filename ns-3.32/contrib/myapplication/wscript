@@ -18,7 +18,9 @@ def configure(conf):
 def build(bld):
     module = bld.create_ns3_module('myapplication', ['core'])
     module.source = [
+        'model/client.cc',
         'model/mytestclient.cc',
+        'model/server.cc',
         'helper/myapplication-helper.cc',
         ]
 
@@ -35,8 +37,10 @@ def build(bld):
     headers = bld(features='ns3header')
     headers.module = 'myapplication'
     headers.source = [
+        'model/client.h',
         'model/mytestclient.h',
         'helper/myapplication-helper.h',
+        'model/server.h',
         ]
 
     if bld.env.ENABLE_EXAMPLES:

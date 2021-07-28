@@ -1,6 +1,7 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
-#ifndef TEST_UDP_ECHO_CLIENT_H
-#define TEST_UDP_ECHO_CLIENT_H
+#ifndef MYAPPLICATION_H
+#define MYAPPLICATION_H
+
 
 #include "ns3/application.h"
 #include "ns3/event-id.h"
@@ -14,19 +15,17 @@ namespace ns3 {
 class Socket;
 class Packet;
 
-    class TestUdpEchoClient : public Application
+    class Client : public Application
     {
         public:
 	        static TypeId GetTypeId(void);
 	        
-	        TestUdpEchoClient();
-	        virtual ~TestUdpEchoClient();
+	        Client();
+	        virtual ~Client();
 	        
 	        void SetRemote(Address ip, uint16_t port);
 	
 	        void SetRemote(Address addr);
-	
-	//      void SetDataSize(uint32_t dataSize);
 	
 	        uint32_t GetDataSize(void) const;
 	
@@ -52,10 +51,6 @@ class Packet;
 	  		  /**
 	  		   * \brief Schedule the next packet transmission
 	  		   * \param dt time interval between packets.
-	  		   */
-	  		void ScheduleTransmit (Time dt);
-	  		  /**
-	  		   * \brief Send a packet
 	  		   */
 	  		void Send (void);
 	  		
@@ -98,8 +93,10 @@ class Packet;
               //Task m_readyToSend;
 
     };
+    
 
 }
 
-#endif /* TEST_UDP_ECHO_CLIENT_H */
+
+#endif /* MYAPPLICATION_H */
 

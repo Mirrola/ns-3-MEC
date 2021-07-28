@@ -14,7 +14,11 @@ TestUdpEchoClientHelper::TestUdpEchoClientHelper (Address address, uint16_t port
   SetAttribute ("RemoteAddress", AddressValue (address));
   SetAttribute ("RemotePort", UintegerValue (port));
 }
-
+TestUdpEchoClientHelper::TestUdpEchoClientHelper(uint16_t port)
+{
+  m_factory.SetTypeId (TestUdpEchoClient::GetTypeId ());
+  SetAttribute ("Port", UintegerValue (port));
+}
 TestUdpEchoClientHelper::TestUdpEchoClientHelper (Address address)
 {
   m_factory.SetTypeId (TestUdpEchoClient::GetTypeId ());
@@ -29,11 +33,11 @@ TestUdpEchoClientHelper::SetAttribute (
   m_factory.Set (name, value);
 }
 
-void
-TestUdpEchoClientHelper::SetFill (Ptr<Application> app, std::string fill)
-{
-  app->GetObject<TestUdpEchoClient>()->SetFill (fill);
-}
+//void
+//TestUdpEchoClientHelper::SetFill (Ptr<Application> app, std::string fill)
+//{
+//  app->GetObject<TestUdpEchoClient>()->SetFill (fill);
+//}
 
 //void
 //TestUdpEchoClientHelper::SetFill (Ptr<Application> app, uint8_t fill, uint32_t dataLength)
@@ -50,7 +54,9 @@ TestUdpEchoClientHelper::SetFill (Ptr<Application> app, std::string fill)
 ApplicationContainer
 TestUdpEchoClientHelper::Install (Ptr<Node> node) const
 {
-  return ApplicationContainer (InstallPriv (node));
+   auto app =  InstallPriv(node);
+
+  return ApplicationContainer(app);
 }
 
 ApplicationContainer

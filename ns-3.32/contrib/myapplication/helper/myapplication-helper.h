@@ -31,6 +31,7 @@ public:
    *
    * \param addr The address of the remote udp echo server
    */
+  TestUdpEchoClientHelper(uint16_t port);
   TestUdpEchoClientHelper (Address addr);
 
   /**
@@ -53,7 +54,7 @@ public:
    * \param app Smart pointer to the application (real type must be UdpEchoClient).
    * \param fill The string to use as the actual echo data bytes.
    */
-  void SetFill (Ptr<Application> app, std::string fill);
+ // void SetFill (Ptr<Application> app, std::string fill);
 
   /**
    * Given a pointer to a UdpEchoClient application, set the data fill of the 
