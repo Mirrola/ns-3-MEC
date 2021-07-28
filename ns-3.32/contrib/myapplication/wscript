@@ -19,9 +19,7 @@ def build(bld):
     module = bld.create_ns3_module('myapplication', ['core'])
     module.source = [
         'model/client.cc',
-        'model/mytestclient.cc',
         'model/server.cc',
-        'helper/myapplication-helper.cc',
         ]
 
     module_test = bld.create_ns3_module_test_library('myapplication')
@@ -38,8 +36,6 @@ def build(bld):
     headers.module = 'myapplication'
     headers.source = [
         'model/client.h',
-        'model/mytestclient.h',
-        'helper/myapplication-helper.h',
         'model/server.h',
         ]
 
