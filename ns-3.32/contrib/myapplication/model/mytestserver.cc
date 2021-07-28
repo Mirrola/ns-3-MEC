@@ -31,72 +31,73 @@
 #include "ns3/packet.h"
 #include "ns3/uinteger.h"
 
-#include "server.h"
+#include "mytestserver.h"
+#include </usr/include/boost/serialization/serialization.hpp>
+#include </usr/include/boost/archive/text_iarchive.hpp>
+#include </usr/include/boost/archive/text_oarchive.hpp>
 
 namespace ns3 {
 
-NS_LOG_COMPONENT_DEFINE ("Server");
+NS_LOG_COMPONENT_DEFINE ("TestUdpServer");
 
-NS_OBJECT_ENSURE_REGISTERED (Server);
+NS_OBJECT_ENSURE_REGISTERED (TestUdpServer);
 
 TypeId
-Server::GetTypeId (void)
+TestUdpServer::GetTypeId (void)
 {
-  static TypeId tid = TypeId ("ns3::Server")
+  static TypeId tid = TypeId ("ns3::TestUdpServer")
     .SetParent<Application> ()
     .SetGroupName("Applications")
-    .AddConstructor<Server> ()
+    .AddConstructor<TestUdpServer> ()
     .AddAttribute ("Port", "Port on which we listen for incoming packets.",
                    UintegerValue (9),
-                   MakeUintegerAccessor (&Server::m_port),
+                   MakeUintegerAccessor (&TestUdpServer::m_port),
                    MakeUintegerChecker<uint16_t> ())
     .AddTraceSource ("Rx", "A packet has been received",
-                     MakeTraceSourceAccessor (&Server::m_rxTrace),
+                     MakeTraceSourceAccessor (&TestUdpServer::m_rxTrace),
                      "ns3::Packet::TracedCallback")
     .AddTraceSource ("RxWithAddresses", "A packet has been received",
-                     MakeTraceSourceAccessor (&Server::m_rxTraceWithAddresses),
+                     MakeTraceSourceAccessor (&TestUdpServer::m_rxTraceWithAddresses),
                      "ns3::Packet::TwoAddressTracedCallback")
   ;
   return tid;
 }
 
-Server::Server ()
+TestUdpServer::TestUdpServer ()
 {
   NS_LOG_FUNCTION (this);
 }
 
-Server::~Server()
+TestUdpServer::~TestUdpServer()
 {
   NS_LOG_FUNCTION (this);
   m_socket = 0;
   m_socket6 = 0;
 }
-
-std::pair<Ptr<Task>,bool> Server::Deserialization(const std::string& t)
+std::pair<Task,bool> TestUdpServer::Deserialization(const std::string& payload)
 {
     const std::string prefix = "22 serialization::archive";
-    if(t.find(prefix)==std::string::npos)
+    if(payload.find(prefix)==std::string::npos)
     {
-        Task temp;//默认初始化表示反序列化失败
-        Ptr<Task> newtask = CreateObject<Task>(temp);
-        return std::make_pair(newtask,false);
+        Task t;//默认初始化表示反序列化失败
+        return std::make_pair(t,false);
     }
-    std::istringstream iss(t);
+    std::istringstream iss(payload);
     boost::archive::text_iarchive ia(iss);
     Task temp;
     ia>>temp;
-    Ptr<Task> newtask = CreateObject<Task>(temp);
-    return std::make_pair(newtask,true);
+    return std::make_pair(temp,true);
 }
+
 void
-Server::DoDispose (void)
+TestUdpServer::DoDispose (void)
 {
   NS_LOG_FUNCTION (this);
   Application::DoDispose ();
 }
 
 void 
-Server::StartApplication (void)
+TestUdpServer::StartApplication (void)
 {
   NS_LOG_FUNCTION (this);
 
@@ -148,12 +149,12 @@ Server::StartApplication (void)
         }
     }
 
-  m_socket->SetRecvCallback (MakeCallback (&Server::HandleRead, this));
-  m_socket6->SetRecvCallback (MakeCallback (&Server::HandleRead, this));
+  m_socket->SetRecvCallback (MakeCallback (&TestUdpServer::HandleRead, this));
+  m_socket6->SetRecvCallback (MakeCallback (&TestUdpServer::HandleRead, this));
 }
 
 void 
-Server::StopApplication ()
+TestUdpServer::StopApplication ()
 {
   NS_LOG_FUNCTION (this);
 
@@ -170,7 +171,7 @@ Server::StopApplication ()
 }
 
 void 
-Server::HandleRead (Ptr<Socket> socket)
+TestUdpServer::HandleRead (Ptr<Socket> socket)
 {
   NS_LOG_FUNCTION (this << socket);
 
@@ -195,39 +196,25 @@ Server::HandleRead (Ptr<Socket> socket)
                        Inet6SocketAddress::ConvertFrom (from).GetPort ());
         }
 
-//      packet->RemoveAllPacketTags ();
-//      packet->RemoveAllByteTags ();
+      packet->RemoveAllPacketTags ();
+      packet->RemoveAllByteTags ();
 
+      NS_LOG_LOGIC ("Echoing packet");
+      socket->SendTo (packet, 0, from);
 
+      if (InetSocketAddress::IsMatchingType (from))
+        {
+          NS_LOG_INFO ("At time " << Simulator::Now ().As (Time::S) << " server sent " << packet->GetSize () << " bytes to " <<
+                       InetSocketAddress::ConvertFrom (from).GetIpv4 () << " port " <<
+                       InetSocketAddress::ConvertFrom (from).GetPort ());
+        }
+      else if (Inet6SocketAddress::IsMatchingType (from))
+        {
+          NS_LOG_INFO ("At time " << Simulator::Now ().As (Time::S) << " server sent " << packet->GetSize () << " bytes to " <<
+                       Inet6SocketAddress::ConvertFrom (from).GetIpv6 () << " port " <<
+                       Inet6SocketAddress::ConvertFrom (from).GetPort ());
+        }
     }
-      uint32_t size = packet->GetSize();
-      uint8_t *data = new uint8_t[size];
-      packet->CopyData(data,size);
-      std::string task_string(data,data+size);
-      auto taskPair = Deserialization(task_string);
-      if(taskPair.second==true)
-      {
-          Ptr<Node> node = GetNode();
-          Ptr<Manager> manager = node->GetObject<Manager>();
-          manager->ReceiveTask(taskPair.first);
-	      std::string content = "Task Accept!";
-          uint8_t *dataTemp=0;
-          memcpy (dataTemp, content.c_str (), content.size()+1);
-	      Ptr<Packet> sendPacket = Create<Packet>(dataTemp,content.size()+1);
-	      socket->SendTo (sendPacket, 0, from);
-	      if (InetSocketAddress::IsMatchingType (from))
-	        {
-	          NS_LOG_INFO ("At time " << Simulator::Now ().As (Time::S) << " server sent " << sendPacket->GetSize () << " bytes to " <<
-	                       InetSocketAddress::ConvertFrom (from).GetIpv4 () << " port " <<
-	                       InetSocketAddress::ConvertFrom (from).GetPort ());
-	        }
-	      else if (Inet6SocketAddress::IsMatchingType (from))
-	        {
-	          NS_LOG_INFO ("At time " << Simulator::Now ().As (Time::S) << " server sent " << sendPacket->GetSize () << " bytes to " <<
-	                       Inet6SocketAddress::ConvertFrom (from).GetIpv6 () << " port " <<
-	                       Inet6SocketAddress::ConvertFrom (from).GetPort ());
-	        }
-      }
 }
 
 } // Namespace ns3

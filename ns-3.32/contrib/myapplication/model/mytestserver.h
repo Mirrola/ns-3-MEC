@@ -16,16 +16,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef SERVER_H
-#define SERVER_H
+#ifndef MYTESTSERVER_H
+#define MYTESTSERVER_H
 
 #include "ns3/application.h"
 #include "ns3/event-id.h"
 #include "ns3/ptr.h"
 #include "ns3/address.h"
 #include "ns3/traced-callback.h"
-#include "ns3/task.h"
-#include "ns3/manager.h"
+
 namespace ns3 {
 
 class Socket;
@@ -42,7 +41,7 @@ class Packet;
  *
  * Every packet received is sent back.
  */
-class Server : public Application 
+class TestUdpServer : public Application 
 {
 public:
   /**
@@ -50,9 +49,10 @@ public:
    * \return the object TypeId
    */
   static TypeId GetTypeId (void);
-  Server ();
-  virtual ~Server (); 
-  std::pair<Ptr<Task>,bool> Deserialization(const std::string& t);
+  TestUdpServer ();
+  virtual ~TestUdpServer ();
+  std::pair<Task,bool> Deserialization(const string& payload);
+
 protected:
   virtual void DoDispose (void);
 
@@ -84,5 +84,5 @@ private:
 
 } // namespace ns3
 
-#endif /* SERVER_H */
+#endif /* UDP_ECHO_SERVER_H */
 
